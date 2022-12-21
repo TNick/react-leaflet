@@ -15,6 +15,14 @@ export interface MediaOverlayProps
   bounds: LatLngBoundsExpression
 }
 
+/**
+ * A function that updates the target element when bounds, opacity or
+ * zIndex properties change.
+ *
+ * @param overlay The target element.
+ * @param props The current set of properties.
+ * @param prevProps The previous set of properties.
+ */
 export function updateMediaOverlay<
   E extends LeafletImageOverlay | LeafletSVGOverlay | LeafletVideoOverlay,
   P extends MediaOverlayProps,

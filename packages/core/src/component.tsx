@@ -15,10 +15,25 @@ import type { LeafletElement } from './element.js'
 
 type ElementHook<E, P> = (props: P) => MutableRefObject<LeafletElement<E>>
 
+/**
+ * A simple interface that describes an object with one optional
+ * property: the children.
+ */
 export type PropsWithChildren = {
   children?: ReactNode
 }
 
+/**
+ * Create a component that wraps its children in a context provider.
+ *
+ * The value for the context is taken from the upstream hook's 'result.
+ *
+ * The inner instance representing the element that was created
+ * is made available through the ref.
+ *
+ * @param useElement The upstream hook.
+ * @returns a forward-reffed component
+ */
 export function createContainerComponent<E, P extends PropsWithChildren>(
   useElement: ElementHook<E, P>,
 ) {
@@ -34,6 +49,17 @@ export function createContainerComponent<E, P extends PropsWithChildren>(
   return forwardRef(ContainerComponent)
 }
 
+/**
+ * Create a component that has an internal open/close state.
+ *
+ * The inner DivOverlay's update method gets called when the
+ * open/close state changes.
+ *
+ * If there is a content node in the inner DivOverlay then a portal is created
+ * through it and the children will be rendered there.
+ * @param useElement The upstream hook that creates the DivOverlay
+ * @returns a forward-referenced component
+ */
 export function createDivOverlayComponent<
   E extends DivOverlay,
   P extends PropsWithChildren,
@@ -60,6 +86,15 @@ export function createDivOverlayComponent<
   return forwardRef(OverlayComponent)
 }
 
+/**
+ * Create a component that has exports inner Leaflet element
+ * through the forward reference mechanism of React.
+ *
+ * The component does not render anything.
+ *
+ * @param useElement A hook that can create LeafletElement objects.
+ * @returns a forward-referenced component
+ */
 export function createLeafComponent<E, P>(useElement: ElementHook<E, P>) {
   function LeafComponent(props: P, forwardedRef: Ref<E>) {
     const { instance } = useElement(props).current
